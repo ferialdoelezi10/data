@@ -143,7 +143,7 @@ def index():
     z = R * np.sin(np.radians(lat))
 
     # Load and process GeoJSON
-    gdf = gpd.read_file(geojson_file_path)
+    gdf = gpd.read_file(f"GeoJSON:{geojson_file_path}")
     if gdf.crs != "EPSG:4326":
         gdf = gdf.to_crs("EPSG:4326")
 
