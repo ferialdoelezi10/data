@@ -1,0 +1,7 @@
+Flask==3.0.3
+pandas==2.2.2
+plotly==5.22.0
+numpy==1.26.0
+netCDF4==1.6.1
+geopandas==1.7.2
+gunicorn==23.0.0
