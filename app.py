@@ -98,8 +98,8 @@ def index():
 
     # Part 2: 3D Globe Visualization
     # Paths to NetCDF and GeoJSON files
-    nc_file_path = "/Users/aldoelezi/Desktop/3D_concentration_2022/3D_concentration_2022.nc"
-    geojson_file_path = "/Users/aldoelezi/Desktop/adm.geojson"
+    nc_file_path = "https://docs.google.com/spreadsheets/d/1V4xFI_fHcewCI3UpPGQ4zFWcWEIhDeBQ/edit?usp=drive_link&ouid=114011480270416535431&rtpof=true&sd=true"
+    geojson_file_path = "https://drive.google.com/file/d/1giNNChr0OkFwo_xQLL6LhsXvZWh-s7Cj/view?usp=sharing"
 
     # Load NetCDF data
     data_nc = Dataset(nc_file_path, mode='r')
