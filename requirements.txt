@@ -3,4 +3,7 @@ pandas==2.2.2
 plotly==5.22.0
 numpy==1.26.4
 netCDF4==1.7.2
+geopandas==1.0.1
 gunicorn==23.0.0
+shapely==2.0.6
+pyproj==3.7.0
