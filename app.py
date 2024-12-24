@@ -10,12 +10,27 @@ import requests
 
 app = Flask(__name__)
 
-# Function to download files locally
-def download_file(url, local_filename):
-    with requests.get(url, stream=True) as r:
-        r.raise_for_status()
-        with open(local_filename, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=8192):
+# Function to download files from Google Drive using file ID
+def download_large_file_from_google_drive(file_id, destination):
+    def get_confirm_token(response):
+        for key, value in response.cookies.items():
+            if key.startswith('download_warning'):
+                return value
+        return None
+
+    url = "https://drive.google.com/uc?export=download"
+    session = requests.Session()
+
+    response = session.get(url, params={'id': file_id}, stream=True)
+    token = get_confirm_token(response)
+
+    if token:
+        params = {'id': file_id, 'confirm': token}
+        response = session.get(url, params=params, stream=True)
+
+    with open(destination, "wb") as f:
+        for chunk in response.iter_content(chunk_size=32768):
+            if chunk:
                 f.write(chunk)
 
 @app.route("/")
@@ -106,18 +121,19 @@ def index():
     line_graph_html = pio.to_html(line_fig, full_html=False)
 
     # Part 2: 3D Globe Visualization
-    # Paths to NetCDF and GeoJSON files
-    nc_file_url = "https://drive.google.com/uc?id=1IswWKtiNuSUNT5JxFgAaQ1VfXQL_t0OW&export=download"
-    geojson_file_url = "https://drive.google.com/uc?id=1giNNChr0OkFwo_xQLL6LhsXvZWh-s7Cj&export=download"
+    # File IDs for Google Drive
+    nc_file_id = "1IswWKtiNuSUNT5JxFgAaQ1VfXQL_t0OW"
+    geojson_file_id = "1giNNChr0OkFwo_xQLL6LhsXvZWh-s7Cj"
 
+    # Local file paths
     nc_file_path = "3D_concentration_2022.nc"
     geojson_file_path = "adm.geojson"
 
     # Download files if not already present
     if not os.path.exists(nc_file_path):
-        download_file(nc_file_url, nc_file_path)
+        download_large_file_from_google_drive(nc_file_id, nc_file_path)
     if not os.path.exists(geojson_file_path):
-        download_file(geojson_file_url, geojson_file_path)
+        download_large_file_from_google_drive(geojson_file_id, geojson_file_path)
 
     # Load NetCDF data
     data_nc = Dataset(nc_file_path, mode='r')
@@ -143,7 +159,7 @@ def index():
     z = R * np.sin(np.radians(lat))
 
     # Load and process GeoJSON
-    gdf = gpd.read_file(f"GeoJSON:{geojson_file_path}")
+    gdf = gpd.read_file(geojson_file_path)
     if gdf.crs != "EPSG:4326":
         gdf = gdf.to_crs("EPSG:4326")
 
