@@ -6,8 +6,17 @@ import numpy as np
 from netCDF4 import Dataset
 import geopandas as gpd
 import os
+import requests
 
 app = Flask(__name__)
+
+# Function to download files locally
+def download_file(url, local_filename):
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(local_filename, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                f.write(chunk)
 
 @app.route("/")
 def index():
@@ -98,8 +107,17 @@ def index():
 
     # Part 2: 3D Globe Visualization
     # Paths to NetCDF and GeoJSON files
-    nc_file_path = "https://drive.google.com/uc?id=1IswWKtiNuSUNT5JxFgAaQ1VfXQL_t0OW&export=download"
-    geojson_file_path = "https://drive.google.com/uc?id=1giNNChr0OkFwo_xQLL6LhsXvZWh-s7Cj&export=download"
+    nc_file_url = "https://drive.google.com/uc?id=1IswWKtiNuSUNT5JxFgAaQ1VfXQL_t0OW&export=download"
+    geojson_file_url = "https://drive.google.com/uc?id=1giNNChr0OkFwo_xQLL6LhsXvZWh-s7Cj&export=download"
+
+    nc_file_path = "3D_concentration_2022.nc"
+    geojson_file_path = "adm.geojson"
+
+    # Download files if not already present
+    if not os.path.exists(nc_file_path):
+        download_file(nc_file_url, nc_file_path)
+    if not os.path.exists(geojson_file_path):
+        download_file(geojson_file_url, geojson_file_path)
 
     # Load NetCDF data
     data_nc = Dataset(nc_file_path, mode='r')
