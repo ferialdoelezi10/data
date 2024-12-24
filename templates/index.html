@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CO2 Data Visualization</title>
+    <title>Data visualization Elezi Ferialdo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -15,8 +15,8 @@
 
         <!-- Section for the Line Chart -->
         <section>
-            <h2>Line Chart: CO₂ Concentrations Over Time</h2>
-            <p>This chart shows the average carbon dioxide (CO₂) levels in the atmosphere from 1959 to 2023.</p>
+            <h2>Average carbon dioxide (CO₂) levels in the atmosphere from 1959 to 20233</h2>
+            <p>Atmospheric CO₂ levels hit a record 421.08 ppm in 2023, peaking at 424 ppm in May. Pre-industrial levels averaged 280 ppm, but human activities like burning fossil fuels and deforestation have driven CO₂ over 50% higher. </p>
             <div id="line-chart">
                 {{ line_graph_html|safe }}
             </div>
